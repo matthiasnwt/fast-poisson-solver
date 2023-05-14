@@ -1,4 +1,8 @@
 # Fast Poisson Solver
+<p float="left">
+  <img src="/assets/400_l.pdf" height="100" />
+  <img src="/assets/execution_time_vs_precision.pdf" height="100" /> 
+</p>
 
 Short description of your project, what it does, the motivation behind it, and its core features.
 
@@ -15,7 +19,7 @@ Short description of your project, what it does, the motivation behind it, and i
 This project is available on PyPI and can be installed with pip:
 
 ```bash
-pip install your-package-name
+pip install fast-poisson-solver
 ```
 
 ## Usage
