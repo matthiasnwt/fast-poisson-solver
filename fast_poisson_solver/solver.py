@@ -123,14 +123,14 @@ class Solver:
             self.model = torch.compile(self.model)
 
     def evaluate_network_pde(self):
-        self.x.requires_grad = True
-        self.y.requires_grad = True
-        self.H = self.model.h(self.x, self.y)
-        self.DH = calculate_laplace(self.H, self.x, self.y).detach().to(self.precision)
+        self.x_pde.requires_grad = True
+        self.y_pde.requires_grad = True
+        self.H = self.model.h(self.x_pde, self.y_pde)
+        self.DH = calculate_laplace(self.H, self.x_pde, self.y_pde).detach().to(self.precision)
         self.DHtDH = torch.matmul(self.DH.t(), self.DH)
         self.Dht = self.DH.t()
-        self.x.requires_grad = False
-        self.y.requires_grad = False
+        self.x_pde.requires_grad = False
+        self.y_pde.requires_grad = False
         self.H = self.H.detach()
 
     def evaluate_network_bc(self):
@@ -169,16 +169,17 @@ class Solver:
         if self.verbose > 0:
             print('Pre-Computed stored.')
 
-    def precompute(self, x, y, x_bc, y_bc, name=None, save=True, load=True):
+    def precompute(self, x_pde, y_pde, x_bc, y_bc, name=None, save=True, load=True):
         t0 = time.perf_counter()
 
         if name is not None:
             self.precompute_file = os.path.join(self.precompute_path, name + f'.pkl')
 
-        self.x, self.y, self.x_bc, self.y_bc = format_input([x, y, x_bc, y_bc], self.precision, self.device)
+        self.x_pde, self.y_pde, self.x_bc, self.y_bc = format_input([x_pde, y_pde, x_bc, y_bc],
+                                                                    self.precision, self.device)
 
-        self.x_tot = torch.cat([self.x, self.x_bc], dim=0)
-        self.y_tot = torch.cat([self.y, self.y_bc], dim=0)
+        self.x_tot = torch.cat([self.x_pde, self.x_bc], dim=0)
+        self.y_tot = torch.cat([self.y_pde, self.y_bc], dim=0)
 
         assert torch.min(self.x_tot) >= 0 and torch.max(
             self.x_tot) <= 1, 'x coordinates should be in [0, 1]. Please rescale.'

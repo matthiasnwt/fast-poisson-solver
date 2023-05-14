@@ -57,7 +57,6 @@ solver = Solver(device='cuda:0', precision=torch.float32, verbose=False,
                 use_weights=True, compile_model=True, lambdas_pde=None, seed=0)
 ```
 Below is a brief explanation of the parameters used in the initialization of the Solver class:
-
 * device (default 'cuda:0'): Specifies the device where the computations will be performed. This should be a valid PyTorch device string such as 'cuda:0' for GPU processing or 'cpu' for CPU processing.
 * precision (default torch.float32): This determines the precision of the computation. This should be a valid PyTorch data type such as torch.float32 or torch.float64.
 * verbose (default False): A boolean value which, when set to True, enables the printing of detailed logs during computation.
@@ -65,6 +64,22 @@ Below is a brief explanation of the parameters used in the initialization of the
 * compile_model (default True): A boolean value which specifies whether the network model is compiled for faster inference. If False, the model won't be compiled.
 * lambdas_pde (default None): A list of floats that weight the influence of the PDE part in the loss term. If None, default weight 1e-11 will be used.
 * seed (default 0): This parameter sets the seed for generating random numbers, which helps in achieving deterministic results.
+
+
+#### `precompute` Method
+The `precompute` method is used for precomputing of the data based on the given coordinates.
+This method is part of the `Solver` class and can be used as follows:
+
+```python
+solver.precompute(x_pde, y_pde, x_bc, y_bc, name=None, save=True, load=True)
+```
+Here is a brief explanation of the parameters for this method:
+* x_pde, y_pde: These are the coordinates that lie inside the domain and define the behavior of the partial differential equation (PDE). They should be provided as tensors, arrays or lists (Note: tensors are the fastest).
+* x_bc, y_bc: These are the coordinates of the boundary condition. They should be provided as tensors, arrays or lists (Note: tensors are the fastest)
+* name (default None): This is an optional parameter that specifies the name used for saving or loading the precomputed data. If no name is provided, the default name will be used.
+* save (default True): A boolean value that specifies whether the precomputed data should be saved. If True, the data will be saved using the provided name.
+* load (default True): A boolean value that specifies whether the precomputed data with the provided name should be loaded. If True, the method will attempt to load the data with the given name.
+
 
 
 ## Features
