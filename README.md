@@ -1,7 +1,7 @@
 # Fast Poisson Solver
 <p float="left">
-  <img src="/assets/400_l.pdf" height="100" />
-  <img src="/assets/execution_time_vs_precision.pdf" height="100" /> 
+  <img src="/assets/platzhalter.jpg" height="100" />
+  <img src="/assets/platzhalter.jpg" height="100" /> 
 </p>
 
 Short description of your project, what it does, the motivation behind it, and its core features.
