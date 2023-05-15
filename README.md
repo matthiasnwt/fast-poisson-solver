@@ -13,6 +13,7 @@ Short description of your project, what it does, the motivation behind it, and i
 4. [Contributing](#contributing)
 5. [License](#license)
 6. [Contact](#contact)
+7. [To-Dos](#to-dos)
 
 ## Installation
 
@@ -99,3 +100,6 @@ We use SemVer for versioning.
 
 
 ## Contact
+
+## To-Dos
+* Implement a check for cuda and automatically switch to cpu if cuda is not avaiable
