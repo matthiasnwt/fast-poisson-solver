@@ -1,5 +1,4 @@
 Analyzer
-======
+========
 
-.. automodule:: fast_poisson_solver.analyze
-   :members: analyze
+.. autofunction:: fast_poisson_solver.analyze

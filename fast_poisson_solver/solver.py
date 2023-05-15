@@ -265,6 +265,22 @@ class Solver:
             The source function for the PDE.
         bc : tensor/array/list
             The boundary condition for the PDE.
+
+        Returns
+        -------
+        tuple
+            The tuple contains the following elements:
+
+            u_pred : tensor
+                The complete solution of the PDE.
+            u_pde_pred : tensor
+                The solution of the PDE inside the domain.
+            u_bc_pred : tensor
+                The solution for the boundary condition.
+            f_pred : tensor
+                The predicted source function.
+            runtime : float
+                The time it took the method to run in seconds.
         """
         self.f, self.bc = format_input([f, bc], self.precision, self.device)
 
@@ -299,14 +315,14 @@ class Solver:
         else:
             self.lambda_pde = self.lambdas_pde[0]
 
-        self.u_pred = torch.add(torch.matmul(self.H, self.w_out), self.bias)
+        self.u_pde_pred = torch.add(torch.matmul(self.H, self.w_out), self.bias)
 
         self.f_pred = torch.matmul(self.DH, self.w_out)
         self.u_bc_pred = torch.matmul(self.H_bc, self.w_out) + self.bias
-        self.u = torch.cat([self.u_pred, self.u_bc_pred])
+        self.u_pred = torch.cat([self.u_pde_pred, self.u_bc_pred])
 
         t1 = time.perf_counter()
         if self.verbose > 0:
             print('\nRun Successful:', t1 - t0, 'seconds\n')
 
-        return self.u, self.u_pred, self.u_bc_pred, self.f_pred, t1 - t0
+        return self.u_pred, self.u_pde_pred, self.u_bc_pred, self.f_pred, t1 - t0

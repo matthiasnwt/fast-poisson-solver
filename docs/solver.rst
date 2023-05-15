@@ -1,5 +1,5 @@
 Solver
 ======
 
-.. autoclass:: fast_poisson_solver.solver.Solver
+.. autoclass:: fast_poisson_solver.Solver
    :members: precompute, solve

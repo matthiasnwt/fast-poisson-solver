@@ -55,12 +55,24 @@ def analyze(f, f_pred, u_pred, u_bc_pred, u_num, u_bc, normalize=True):
     normalize : bool, optional
         If True, normalize the input arrays before calculating the error metrics (default is True).
 
+
     Returns
     -------
     dict
-        A dictionary with keys 'u', 'f', and 'bc' each containing a dictionary of the calculated error metrics for
-        the corresponding part of the Poisson equation.
+        A dictionary containing the calculated error metrics for the corresponding part of the Poisson equation.
+
+        'u'
+            A dictionary containing the error metrics for the predicted solution 'u_pred' compared to the numerical
+            solution 'u_num'.
+        'f'
+            A dictionary containing the error metrics for the predicted source term 'f_pred' compared to the true
+            source term 'f'.
+        'bc'
+            A dictionary containing the error metrics for the predicted boundary condition 'u_bc_pred' compared to the
+            true boundary condition 'u_bc'.
+            
     """
+
     f, f_pred, u_pred, u_bc_pred, u_num, u_bc = format_input([f, f_pred, u_pred, u_bc_pred, u_num, u_bc], as_array=True)
 
     f, f_pred, u_pred, u_bc_pred, u_num, u_bc = [v.reshape(-1) for v in [f, f_pred, u_pred, u_bc_pred, u_num, u_bc]]
