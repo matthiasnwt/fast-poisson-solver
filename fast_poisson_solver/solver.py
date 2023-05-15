@@ -1,19 +1,18 @@
-"""
-Copyright (C) 2023 Matthias Neuwirth
+# Copyright (C) 2023 Matthias Neuwirth
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-"""
 
 import os
 import pickle
@@ -35,7 +34,36 @@ rcParams['text.usetex'] = True
 
 
 class Solver:
+    """
+    This class represents the main solver used for fast Poisson equation solving.
+    It is a key component of the `fast_poisson_solver` package.
 
+    Parameters
+    ----------
+    device : str, optional
+        Specifies the device where the computations will be performed.
+        This should be a valid PyTorch device string such as 'cuda' for GPU processing or 'cpu' for CPU processing.
+        Default is 'cuda'.
+    precision : torch.dtype, optional
+        This determines the precision of the computation.
+        This should be a valid PyTorch data type such as torch.float32 or torch.float64.
+        Default is torch.float32.
+    verbose : bool, optional
+        When set to True, enables the printing of detailed logs during computation.
+        Default is False.
+    use_weights : bool, optional
+        Determines whether the network uses pre-trained weights or random weights.
+        If True, the network uses pre-trained weights. Default is True.
+    compile_model : bool, optional
+        Specifies whether the network model is compiled for faster inference.
+        If False, the model won't be compiled. Default is True.
+    lambdas_pde : list of float, optional
+        A list that weights the influence of the PDE part in the loss term.
+        If None, default weight 1e-11 will be used. Default is None.
+    seed : int, optional
+        This parameter sets the seed for generating random numbers,
+        which helps in achieving deterministic results. Default is 0.
+    """
     def __init__(self, device='cuda:0', precision=torch.float32, verbose=False,
                  use_weights=True, compile_model=True, lambdas_pde=None, seed=0):
 
@@ -170,6 +198,29 @@ class Solver:
             print('Pre-Computed stored.')
 
     def precompute(self, x_pde, y_pde, x_bc, y_bc, name=None, save=True, load=True):
+        """
+        This method is used for precomputing of the data based on the given coordinates.
+
+        Parameters
+        ----------
+        x_pde : tensor/array/list
+            Coordinates that lie inside the domain and define the behavior of the partial differential equation (PDE).
+        y_pde : tensor/array/list
+            Coordinates that lie inside the domain and define the behavior of the partial differential equation (PDE).
+        x_bc : tensor/array/list
+            Coordinates of the boundary condition.
+        y_bc : tensor/array/list
+            Coordinates of the boundary condition.
+        name : str, optional
+            Name used for saving or loading the precomputed data.
+            If no name is provided, the default name will be used. Default is None.
+        save : bool, optional
+            Specifies whether the precomputed data should be saved.
+            If True, the data will be saved using the provided `name`. Default is True.
+        load : bool, optional
+            Specifies whether the precomputed data with the provided `name` should be loaded.
+            If True, the method will attempt to load the data with the given name. Default is True.
+        """
         t0 = time.perf_counter()
 
         if name is not None:
@@ -206,14 +257,14 @@ class Solver:
 
     def solve(self, f, bc):
         """
-        This function solves the PDE with the given boundary conditions and source term.
-        It uses the pre-computed LHS and RHS data.
-        If at instantiation multiple lambdas are provided, it will solve the PDE for each lambda and
-        return the solution corresponding to the lambda that minimizes the loss.
+        This method is used to solve the PDE with the provided source function and boundary condition.
 
-        :param f: source term
-        :param bc: boundary conditions
-        :return: solution of the PDE (domain+ boundary, domain, boundary), predicted source term, time elapsed
+        Parameters
+        ----------
+        f : tensor/array/list
+            The source function for the PDE.
+        bc : tensor/array/list
+            The boundary condition for the PDE.
         """
         self.f, self.bc = format_input([f, bc], self.precision, self.device)
 

@@ -41,18 +41,16 @@ u_ml, u_ml_pde, u_ml_bc, f_ml, t_ml = solver.solve(f2, u_bc2)
 ...
 ```
 
-### Advanced
-There are multiple possiblities to 
+In the following the class and the two methods are described in more detail.
+Also, the usage of the numeric, plotting and analyzing method are described.
 
-#### `Solver` Class
+### `Solver` Class
 The `Solver` class is a key component of the `fast_poisson_solver` package.
 This class represents the main solver used for fast Poisson equation solving.
 
 You can initialize as instance of the `Solver` class as follows:
 
 ``` python
-from fast_poisson_solver import Solver
-
 solver = Solver(device='cuda:0', precision=torch.float32, verbose=False,
                 use_weights=True, compile_model=True, lambdas_pde=None, seed=0)
 ```
@@ -66,7 +64,7 @@ Below is a brief explanation of the parameters used in the initialization of the
 * **seed** (default `0`): This parameter sets the seed for generating random numbers, which helps in achieving deterministic results.
 
 
-#### `precompute` Method
+### `precompute` Method
 The `precompute` method is used for precomputing of the data based on the given coordinates.
 This method is part of the `Solver` class and can be used as follows:
 
@@ -80,17 +78,18 @@ Here is a brief explanation of the parameters for this method:
 * **save** (default `True`): A boolean value that specifies whether the precomputed data should be saved. If `True`, the data will be saved using the provided `name`.
 * **load** (default `True`): A boolean value that specifies whether the precomputed data with the provided `name` should be loaded. If `True`, the method will attempt to load the data with the given name.
 
-#### `solve` Method
+### `solve` Method
 The `solve` method is used to solve the PDE with the provided source function and boundary condition. 
 This method is part of the `Solver` class and can be used as follows:
 ```python
 solver.solve(f, bc)
 ```
-They should be provided as tensors, arrays or lists (Note: tensors are the fastest).
-## Features
 Here is a brief explanation of the parameters for this method:
 * **f**: This is the source function for the PDE. It should be provided as a tensor, an array, or a list. Please note that using tensors would lead to the fastest computations.
 * **bc**: This is the boundary condition for the PDE. It should also be provided as a tensor, an array, or a list. As with the source function, using tensors would result in the fastest computations.
+
+They should be provided as tensors, arrays or lists (Note: tensors are the fastest).
+## Features
 ## Contributing
 
 We use SemVer for versioning.

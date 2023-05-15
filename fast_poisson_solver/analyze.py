@@ -1,19 +1,19 @@
-"""
-Copyright (C) 2023 Matthias Neuwirth
+# Copyright (C) 2023 Matthias Neuwirth
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-"""
 import time
 
 import numpy as np
@@ -27,8 +27,40 @@ from .utils import format_input
 
 
 def analyze(f, f_pred, u_pred, u_bc_pred, u_num, u_bc, normalize=True):
-    t0 = time.perf_counter()
+    """
+    Analyze the performance of a Poisson equation solver by comparing predictions with true or numerical values.
 
+    This function calculates various error metrics including Mean Squared Error (MSE), Root Mean Squared Error (RMSE),
+    Mean Absolute Error (MAE), Relative Mean Absolute Error (MAE_R), Structural Similarity Index (SSIM),
+    Peak Signal-to-Noise Ratio (PSNR), and R-Squared (R2) for each of the source term (f), solution (u), and
+    boundary condition (bc) predictions.
+
+    The predicted source term 'f_pred' and boundary condition 'u_bc_pred' are compared with the true source term 'f'
+    and true boundary condition 'u_bc'. The predicted solution 'u_pred' is compared with the numerical solution 'u_num'.
+
+    Parameters
+    ----------
+    f : array-like
+        The true source term of the Poisson equation. Can be a list, numpy array or PyTorch tensor.
+    f_pred : array-like
+        The predicted source term by the solver. Can be a list, numpy array or PyTorch tensor.
+    u_pred : array-like
+        The predicted solution of the Poisson equation. Can be a list, numpy array or PyTorch tensor.
+    u_bc_pred : array-like
+        The predicted solution for the boundary condition. Can be a list, numpy array or PyTorch tensor.
+    u_num : array-like
+        The numerical solution of the Poisson equation. Can be a list, numpy array or PyTorch tensor.
+    u_bc : array-like
+        The true boundary condition. Can be a list, numpy array or PyTorch tensor.
+    normalize : bool, optional
+        If True, normalize the input arrays before calculating the error metrics (default is True).
+
+    Returns
+    -------
+    dict
+        A dictionary with keys 'u', 'f', and 'bc' each containing a dictionary of the calculated error metrics for
+        the corresponding part of the Poisson equation.
+    """
     f, f_pred, u_pred, u_bc_pred, u_num, u_bc = format_input([f, f_pred, u_pred, u_bc_pred, u_num, u_bc], as_array=True)
 
     f, f_pred, u_pred, u_bc_pred, u_num, u_bc = [v.reshape(-1) for v in [f, f_pred, u_pred, u_bc_pred, u_num, u_bc]]
