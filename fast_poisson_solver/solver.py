@@ -23,7 +23,6 @@ import numpy as np
 import torch
 import yaml
 from matplotlib import rcParams
-from torch.backends import cudnn, cuda
 
 from .model import PINN
 from .utils import calculate_laplace, format_input
@@ -67,8 +66,9 @@ class Solver:
     def __init__(self, device='cuda:0', precision=torch.float32, verbose=False,
                  use_weights=True, compile_model=True, lambdas_pde=None, seed=0):
 
-        cuda.matmul.allow_tf32 = False
-        cudnn.allow_tf32 = False
+        if torch.cuda.is_available():
+            torch.backends.cuda.matmul.allow_tf32 = False
+            torch.backends.cudnn.allow_tf32 = False
 
         if lambdas_pde is None:
             lambdas_pde = [2 ** -11]
@@ -79,7 +79,7 @@ class Solver:
 
         self.verbose = verbose
         self.precision = precision
-        self.device = device
+        self.device = device if torch.cuda.is_available() else 'cpu'
         self.use_weights = use_weights
         self.compile_model = compile_model
         self.lambdas_pde = lambdas_pde

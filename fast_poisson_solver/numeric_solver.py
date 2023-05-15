@@ -36,9 +36,54 @@ from .utils import format_input
 warnings.simplefilter('ignore', SparseEfficiencyWarning)
 
 
-def numeric_solve(roh_pde, x_pde, y_pde, u_bc, x_bc, y_bc, precision=torch.float32, timeit=False, verbose=1):
+def numeric_solve(f, x_pde, y_pde, u_bc, x_bc, y_bc, precision=torch.float32, timeit=False, verbose=0):
+    """
+    This function numerically solves the partial differential equation (PDE) using the provided source function,
+    PDE coordinates, boundary condition, and boundary condition coordinates. It uses the precision specified,
+    measures the time taken for the operation if requested, and controls the verbosity of the output.
 
-    roh_pde, x_pde, y_pde, u_bc, x_bc, y_bc = format_input([roh_pde, x_pde, y_pde, u_bc, x_bc, y_bc],
+    Parameters
+    ----------
+    f : tensor/array/list
+        The source function for the PDE.
+    x_pde : tensor/array/list
+        Coordinates that lie inside the domain and define the behavior of the PDE.
+    y_pde : tensor/array/list
+        Coordinates that lie inside the domain and define the behavior of the PDE.
+    u_bc : tensor/array/list
+        The boundary condition for the PDE.
+    x_bc : tensor/array/list
+        Coordinates of the boundary condition.
+    y_bc : tensor/array/list
+        Coordinates of the boundary condition.
+    precision : torch.dtype, optional
+        The precision to be used for the numeric solver. Default is torch.float32.
+    timeit : bool, optional
+        Whether to measure the time taken for the operation. Default is False.
+    verbose : int, optional
+        Controls the verbosity of the output. If 0, only the solution 'u' is returned. If greater than 0,
+        both the solution 'u' and runtime 'delta t' are returned. Default is 1.
+
+    Returns
+    -------
+    tuple
+        The solution 'u' and runtime 'delta t' if `verbose` is greater than 0, otherwise only the solution 'u'.
+
+        u : tensor
+            The complete numeric solution of the PDE.
+
+        t : float
+            The runtime, i.e., the time it took the method to run in seconds.
+            Only returned if `verbose` is greater than 0.
+
+    References
+    ----------
+    Zaman, M.A. "Numerical Solution of the Poisson Equation Using Finite Difference Matrix Operators",
+    Electronics 2022, 11, 2365. https://doi.org/10.3390/electronics11152365
+
+    See also: https://github.com/zaman13/Poisson-solver-2D
+    """
+    f, x_pde, y_pde, u_bc, x_bc, y_bc = format_input([f, x_pde, y_pde, u_bc, x_bc, y_bc],
                                                            precision=precision, device="cpu", as_array=True)
 
     dtype_map = {
@@ -83,7 +128,7 @@ def numeric_solve(roh_pde, x_pde, y_pde, u_bc, x_bc, y_bc, precision=torch.float
 
     b_ind = [np.argwhere(ind >= len(x_pde)).reshape(-1)]
 
-    f = np.concatenate([roh_pde, u_bc], axis=0)
+    f = np.concatenate([f, u_bc], axis=0)
     f = f[ind]
 
     b_type = [0]
