@@ -1,7 +1,7 @@
 # Fast Poisson Solver
-<p float="left">
-  <img src="/assets/platzhalter.jpg" height="100" />
-  <img src="/assets/platzhalter.jpg" height="100" /> 
+<p float="center">
+  <img src="/assets/execution_time_vs_precision.png" height="200" />
+  <img src="/assets/example_result.png" height="200" /> 
 </p>
 
 The Poisson equation is an integral part of many physical phenomena, yet its computation
@@ -25,11 +25,10 @@ The boundary conditions should be a constant value.
 ## Table of Contents
 1. [Installation](#installation)
 2. [Basic Usage](#basic-usage)
-3. [Features](#features)
-4. [Contributing](#contributing)
-5. [License](#license)
-6. [Contact](#contact)
-7. [Roadmap and Future Enhancements](#roadmap-and-future-enhancements)
+3. [Contributing](#contributing)
+4. [License](#license)
+5. [Contact](#contact)
+6. [Roadmap and Future Enhancements](#roadmap-and-future-enhancements)
 
 ## Installation
 

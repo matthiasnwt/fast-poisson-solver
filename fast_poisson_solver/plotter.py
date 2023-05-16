@@ -259,6 +259,82 @@ def plot(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, grid=False, save=False, sa
         plt.show()
     plt.close()
 
+def plot_side_by_side(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, u_num,
+                    grid=False, save=False, save_path=None, name=None, show=True):
+    """
+    This function is used to plot and compare the numeric solution, the predicted Machine Learning solution,
+    and the residual between the two. It also shows the true source function, the predicted source function,
+    and the residual between these two.
+
+    Parameters
+    ----------
+    x_pde : tensor/array/list
+        Coordinates that lie inside the domain and define the behavior of the PDE.
+    y_pde : tensor/array/list
+        Coordinates that lie inside the domain and define the behavior of the PDE.
+    x_bc : tensor/array/list
+        Coordinates of the boundary condition.
+    y_bc : tensor/array/list
+        Coordinates of the boundary condition.
+    u_pred : tensor/array/list
+        The predicted solution of the PDE using Machine Learning.
+    f : tensor/array/list
+        The true source function for the PDE.
+    f_pred : tensor/array/list
+        The predicted source function for the PDE.
+    u_num : tensor/array/list
+        The numeric solution of the PDE.
+    grid : bool, optional
+        If True, the data is arranged into a grid and plotted as an image.
+        If False, tricontourf is used to create a contour plot. Default is False.
+    save : bool, optional
+        Whether to save the image. The image is saved in both .pdf and .png formats. Default is False.
+    save_path : str, optional
+        Path where the image will be saved. Used only if `save` is True. Default is None.
+    name : str, optional
+        Name of the image file. Used only if `save` is True. Default is None.
+    show : bool, optional
+        Whether to display the plot. Default is False.
+    """
+
+    u_pred, u_num, f, f_pred, x, y, x_bc, y_bc = format_input([u_pred, u_num, f, f_pred, x_pde, y_pde, x_bc, y_bc],
+                                                           precision=torch.float64, device="cpu", as_array=True)
+
+
+
+    x_tot = np.concatenate([x, x_bc])
+    y_tot = np.concatenate([y, y_bc])
+
+    if grid:
+        x_tot, y_tot, u_num, u_pred = process_grid_data(x_tot, y_tot, u_num, u_pred)
+        x, y, f, f_pred = process_grid_data(x, y, f, f_pred)
+
+    vmin_u, vmax_u = minmax(u_pred, u_num)
+    vmin_f, vmax_f = minmax(f_pred, f)
+
+    fig, ax = plt.subplots(1, 2, figsize=(10, 8), dpi=400, tight_layout=True, sharey='row', sharex='col')
+
+    ax[0].tricontourf(x_tot.reshape(-1), y_tot.reshape(-1), u_num.reshape(-1), 200, cmap='jet', vmin=vmin_u, vmax=vmax_u)
+    ax[1].tricontourf(x_tot.reshape(-1), y_tot.reshape(-1), u_pred.reshape(-1), 200, cmap='jet', vmin=vmin_u,
+                      vmax=vmax_u)
+
+    ax[0].set_title('Numeric Solution', fontsize=30, fontweight='bold')
+    ax[1].set_title('Machine Learning', fontsize=30, fontweight='bold')
+
+    ax[0].set_aspect('equal', adjustable='box')
+    ax[1].set_aspect('equal', adjustable='box')
+
+    ax[0].axis('off')
+    ax[1].axis('off')
+    if save:
+        if not os.path.isdir(save_path):
+            os.makedirs(save_path, exist_ok=True)
+        plt.savefig(os.path.join(save_path, name + '.pdf'), bbox_inches="tight")
+        plt.savefig(os.path.join(save_path, name + '.png'), bbox_inches="tight")
+
+    if show:
+        plt.show()
+    plt.close()
     # np.save(os.path.join(save_path, name + '_residual.npy'), (u_pred - u_num).reshape(solver.grid_size, solver.grid_size))
 
 #
