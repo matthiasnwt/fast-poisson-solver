@@ -23,6 +23,7 @@ from matplotlib.cm import ScalarMappable
 from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.spatial.distance import pdist
 from .utils import minmax, sort_ascend, format_input, process_grid_data
+import matplotlib.font_manager as fm
 
 #
 # def plot_lambda_error(solver):
@@ -318,8 +319,9 @@ def plot_side_by_side(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, u_num,
     ax[1].tricontourf(x_tot.reshape(-1), y_tot.reshape(-1), u_pred.reshape(-1), 200, cmap='jet', vmin=vmin_u,
                       vmax=vmax_u)
 
-    ax[0].set_title('Numeric Solution', fontsize=30, fontweight='bold')
-    ax[1].set_title('Machine Learning', fontsize=30, fontweight='bold')
+    font_name = "Calibri" if "Calibri" in fm.findSystemFonts(fontpaths=None, fontext='ttf') else None
+    ax[0].set_title('Numeric (5s)', fontsize=30, fontweight='bold', fontname=font_name, pad=20)
+    ax[1].set_title('Ours (0.003s)', fontsize=30, fontweight='bold', fontname=font_name, pad=20)
 
     ax[0].set_aspect('equal', adjustable='box')
     ax[1].set_aspect('equal', adjustable='box')
