@@ -12,6 +12,7 @@ method while maintaining high accuracy in various test scenarios.
 The improved efficiency comes from the possibility to pre-compute domain specific steps.
 This means, for a given domain, the poisson equation can be efficiently solved for different source functions and boundary conditions.
 The basic usage example below illustrates this.
+This approach is therefore only faster, if the Poisson equation needs to solved for the same domain with different source functions and boundary values, e.g. in simulation software.
 
 This module comes with an easy to use method for solving arbitrary 2D Poisson problems.
 It also includes a numerical solver and an analyzing function to quantify the results.

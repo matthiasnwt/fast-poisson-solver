@@ -15,6 +15,7 @@ method while maintaining high accuracy in various test scenarios.
 The improved efficiency comes from the possibility to pre-compute domain specific steps.
 This means, for a given domain, the poisson equation can be efficiently solved for different source functions and boundary conditions.
 The basic usage example below illustrates this.
+This approach is therefore only faster, if the Poisson equation needs to solved for the same domain with different source functions and boundary values, e.g. in simulation software. 
 
 <div align="center">
 <img src="/assets/execution_time_vs_precision.png" height="320" />
@@ -108,3 +109,4 @@ If you encounter any issues while using this module, or if you have suggestions 
 * Dirichlet boundary conditions with multiple values or multiple regions of Dirichlet boundary conditions
 * Neuman, Robin, and mixed boundary conditions
 * Extend this approach to 1D and 3D or even nD
+* Easy to compute force term
