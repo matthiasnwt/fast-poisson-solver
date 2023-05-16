@@ -32,7 +32,7 @@ perlin_noise = "^1.12"
 PyYAML = "^6.0"
 skimage = "^0.16"
 scipy = "^1.7"
-numpydoc = "^1.1.0"
+numpydoc = "*"
 
 [build-system]
 requires = ["poetry-core"]
