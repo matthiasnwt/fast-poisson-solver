@@ -1,7 +1,4 @@
 # Fast Poisson Solver
-<div align="center">
-    <img src="/assets/example_result.png" height="250" />
-</div>
 
 The Poisson equation is an integral part of many physical phenomena, yet its computation
 is often time-consuming. This module presents an efficient method using
@@ -9,6 +6,10 @@ physics-informed neural networks (PINNs) to rapidly solve arbitrary 2D Poisson
 problems. Focusing on the 2D Poisson equation, the
 method used in this module shows significant speed improvements over the finite difference
 method while maintaining high accuracy in various test scenarios.
+
+<div align="center">
+    <img src="/assets/example_result.png" height="250" />
+</div>
 
 The improved efficiency comes from the possibility to pre-compute domain specific steps.
 This means, for a given domain, the poisson equation can be efficiently solved for different source functions and boundary conditions.
