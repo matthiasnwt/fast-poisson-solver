@@ -8,8 +8,8 @@ method used in this module shows significant speed improvements over the finite 
 method while maintaining high accuracy in various test scenarios.
 
 <div align="center">
-    <img src="/assets/perlin.png" height="200" />
-    <img src="/assets/sin.png" height="200" />
+    <img src="/assets/perlin.png" height="200" style="margin:10px;"/>
+    <img src="/assets/sin.png" height="200" style="margin:10px;"/>
 </div>
 
 The improved efficiency comes from the possibility to pre-compute domain specific steps.
