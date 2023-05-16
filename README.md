@@ -24,12 +24,12 @@ The boundary conditions should be a constant value.
 
 ## Table of Contents
 1. [Installation](#installation)
-2. [Usage](#usage)
+2. [Basic Usage](#basic-usage)
 3. [Features](#features)
 4. [Contributing](#contributing)
 5. [License](#license)
 6. [Contact](#contact)
-7. [To-Dos](#to-dos)
+7. [Roadmap and Future Enhancements](#roadmap-and-future-enhancements)
 
 ## Installation
 
@@ -75,8 +75,6 @@ It is also not important for the coordinates to lie on a grid (Note: The numeric
 
 For more details see the [Documentation](https://fast-poisson-solver.readthedocs.io/en/latest/)
 
-
-## Features
 ## Contributing
 We warmly welcome contributions to this module. 
 If you have ideas for improvements, new features, or bug fixes, please feel free to submit a pull request.
