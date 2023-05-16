@@ -1,8 +1,9 @@
 # Fast Poisson Solver
-<p float="center">
-  <img src="/assets/execution_time_vs_precision.png" height="200" />
-  <img src="/assets/example_result.png" height="200" /> 
-</p>
+<div align="center">
+<img src="/assets/example_result.png" height="200" /> 
+  <img src="/assets/execution_time_vs_precision.png" height="220" />
+  
+</div>
 
 The Poisson equation is an integral part of many physical phenomena, yet its computation
 is often time-consuming. This module presents an efficient method using
