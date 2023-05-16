@@ -15,7 +15,7 @@ This means, for a given domain, the poisson equation can be efficiently solved f
 The basic usage example below illustrates this.
 
 <div align="center">
-<img src="/assets/execution_time_vs_precision.png" height="220" />
+<img src="/assets/execution_time_vs_precision.png" height="320" />
 </div>
 
 This module comes with an easy-to-use method for solving arbitrary 2D Poisson problems.
