@@ -63,6 +63,7 @@ class Solver:
         This parameter sets the seed for generating random numbers,
         which helps in achieving deterministic results. Default is 0.
     """
+
     def __init__(self, device='cuda:0', precision=torch.float32, verbose=False,
                  use_weights=True, compile_model=True, lambdas_pde=None, seed=0):
 

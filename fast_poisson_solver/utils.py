@@ -14,14 +14,14 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-
 import numpy as np
 import torch
-from scipy.interpolate import interpolate, griddata
+from scipy.interpolate import griddata
 from torch.autograd import grad
 
 torch.backends.cuda.matmul.allow_tf32 = False
 torch.backends.cudnn.allow_tf32 = False
+
 
 def sumsumAB(A, B=None):
     precision = A.dtype
@@ -37,6 +37,7 @@ def sumsumAB(A, B=None):
     mm = torch.mm(mm_A, mm_B.t())
     return mm
 
+
 def sumsumAb(A, b):
     precision = A.dtype
     device = A.device
@@ -48,6 +49,7 @@ def sumsumAb(A, b):
     mm_b = torch.mm(b.t(), ones_b)
     mm = torch.mm(mm_A, mm_b)
     return mm
+
 
 def calculate_laplace(u, x, y):
     laplace = []
@@ -65,10 +67,12 @@ def calculate_laplace(u, x, y):
     laplace = torch.cat(laplace, dim=1)
     return laplace
 
+
 def shape_and_size(name, tensor):
     size = tensor.element_size() * tensor.nelement()
     shape = list(tensor.shape)
     print(f'{name}: Shape: {shape} Size: {size} Bytes')
+
 
 def sort_ascend(x, y, v, return_index=False):
     xy = np.concatenate([x.reshape(-1, 1), y.reshape(-1, 1)], 1)
@@ -81,12 +85,14 @@ def sort_ascend(x, y, v, return_index=False):
     else:
         return x, y, v
 
+
 def minmax(v1, v2=None):
     if v2 is None:
         v2 = v1
     vmin = min((np.min(v1), np.min(v2)))
     vmax = max((np.max(v1), np.max(v2)))
     return vmin, vmax
+
 
 def format_input(v, precision=torch.float32, device='cpu', as_array=False, reshape=True):
     if isinstance(device, str):
@@ -186,7 +192,6 @@ def bicubic_interpolate(x_pde_base, y_pde_base, x_bc_base, y_bc_base, v_base, x_
 
 
 if __name__ == '__main__':
-
     A = torch.rand(3, 2)
     B = torch.rand(4, 1)
     mm = sumsumAb(A, B)

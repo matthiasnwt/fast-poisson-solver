@@ -15,24 +15,18 @@
 
 
 import os
-import random
-import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from perlin_noise import PerlinNoise
-from scipy.ndimage import gaussian_filter
-import scipy.special
 from scipy.stats import qmc
 
 from .data_utils import source_functions as sf
 
 
-
-
 class Data:
-    def __init__(self, cases, domain_x=None, domain_y=None, grid_num=32, noise_std=0, shuffle=False, initial_shuffle=False, batchsize=-1, batchsize_bc=-1,
+    def __init__(self, cases, domain_x=None, domain_y=None, grid_num=32, noise_std=0, shuffle=False,
+                 initial_shuffle=False, batchsize=-1, batchsize_bc=-1,
                  use_torch=False, device='cpu', precision=torch.float32, random_coords=False, seed=0):
         if domain_y is None:
             domain_y = [0, 1]
@@ -60,7 +54,7 @@ class Data:
         self.seed = seed
         self.precision = precision
 
-        assert 0 <= self.domain_y[0] <= 1 and 0 <= self.domain_y[1] <= 1,\
+        assert 0 <= self.domain_y[0] <= 1 and 0 <= self.domain_y[1] <= 1, \
             "Both elements of domain_y should lie within the interval [0, 1] inclusive"
         assert self.domain_y[1] > self.domain_y[0], \
             "The second element of domain_y should be larger than the first element"
@@ -88,7 +82,7 @@ class Data:
         # self.indices = np.arange(self.grid_num ** 2)
         self.indices = np.arange(self.x_grid_num * self.y_grid_num)
         # self.indices_bc = np.arange(4 * self.grid_num + 4)
-        self.indices_bc = np.arange(2 * self.x_grid_num + 2*self.y_grid_num  + 4)
+        self.indices_bc = np.arange(2 * self.x_grid_num + 2 * self.y_grid_num + 4)
 
         if self.initial_shuffle:
             self.indices = np.random.permutation(self.indices)
@@ -156,12 +150,12 @@ class Data:
 
         min_batch = batch_number * self.batchsize
         max_batch = min((min_batch + self.batchsize, self.grid_num ** 2))
-        max_batch = min((min_batch + self.batchsize, self.x_grid_num *self.y_grid_num))
+        max_batch = min((min_batch + self.batchsize, self.x_grid_num * self.y_grid_num))
         batchsize_i = max_batch - min_batch
 
         min_batch_bc = batch_number * self.batchsize_bc
         # max_batch_bc = min((min_batch_bc + self.batchsize_bc, 4 * self.grid_num + 4))
-        max_batch_bc = min((min_batch_bc + self.batchsize_bc, 2 * self.x_grid_num + 2*self.y_grid_num  + 4))
+        max_batch_bc = min((min_batch_bc + self.batchsize_bc, 2 * self.x_grid_num + 2 * self.y_grid_num + 4))
         batchsize_i_bc = max_batch_bc - min_batch_bc
 
         indices_call = self.indices[min_batch: max_batch]
@@ -205,12 +199,11 @@ class Data:
 
     def generate_random_coords(self):
         engine = qmc.Sobol(d=2, scramble=True, seed=self.seed)  # d=2 for 2D points
-        sample = engine.random(int(self.grid_num**2))
+        sample = engine.random(int(self.grid_num ** 2))
         print(sample.shape)
         self.x_grid, self.y_grid = np.hsplit(sample, 2)
         self.y_grid = self.y_grid.flatten()
         self.x_grid = self.x_grid.flatten()
-
 
     def generate_boundary_coords(self):
         # x_grid = np.linspace(self.domain_x[0], self.domain_x[1], self.grid_num + 2)
@@ -232,7 +225,7 @@ class Data:
             if case['b_val'] == 'random':
                 self.bc[:, i] = np.ones_like(self.x_bc) * np.random.uniform(-10, 10)
             else:
-                np.random.uniform(-10, 10) # to make sure the random seed is not affected
+                np.random.uniform(-10, 10)  # to make sure the random seed is not affected
                 self.bc[:, i] = np.ones_like(self.x_bc) * case['b_val']
 
             # if case['name'] == 'sinsin':

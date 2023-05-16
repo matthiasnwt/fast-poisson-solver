@@ -14,10 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-import time
-
 import numpy as np
-from matplotlib import pyplot as plt
 from skimage.metrics import peak_signal_noise_ratio as psnr
 from skimage.metrics import structural_similarity as ssim
 from sklearn.metrics import r2_score
@@ -101,7 +98,7 @@ def analyze(f_pred, f, u_bc_pred, u_bc, u_pred=None, u_num=None, normalize=True)
         else:
             range = np.min((maximum - minimum, 1e-8))
 
-        ssim_value = ssim(image1_, image2_, data_range=range+1e-8, multichannel=False, gaussian_weights=True)
+        ssim_value = ssim(image1_, image2_, data_range=range + 1e-8, multichannel=False, gaussian_weights=True)
 
         psnr_value = psnr(image1_, image2_, data_range=range)
         r2 = r2_score(image1_.reshape(-1), image2_.reshape(-1))
@@ -133,7 +130,7 @@ def analyze(f_pred, f, u_bc_pred, u_bc, u_pred=None, u_num=None, normalize=True)
             'SSIM': ssim_value_u,
             'PSNR': psnr_value_u,
             'R2': r2_u
-            }
+        }
 
     ssim_value_f, psnr_valuie_f, r2_f = analyze_struct(f, f_pred, 0)
     mse_f, rmse_f, mae_f, mae_r_f = analyze_standard(f, f_pred, 0)

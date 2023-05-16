@@ -1,15 +1,39 @@
 [tool.poetry]
 name = "fast-poisson-solver"
 version = "0.1.0"
-description = ""
-authors = ["Matthias Neuwirthgit <matthias_nwt@web.de>"]
+description = "A fast solver for the Poisson equation."
+authors = ["Matthias Neuwirth"]
 readme = "README.md"
 packages = [{include = "fast_poisson_solver"}]
+license = "GNUv3"
+keywords = ["Poisson", "solver", "fast", "python"]
+repository = "https://github.com/matthiasnwt/fast-poisson-solver"
+documentation = "https://fast-poisson-solver.readthedocs.io/en/latest/"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: GNU General Public License v3",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+]
 
 [tool.poetry.dependencies]
-python = "^3.9"
-
+python = "^3.6"
+numpy = "^1.14"
+scikit_learn = "^1.0.2"
+matplotlib = "^2.2"
+perlin_noise = "^1.12"
+PyYAML = "^6.0"
+skimage = "^0.16"
+scipy = "^1.7"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+

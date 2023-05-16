@@ -16,14 +16,14 @@
 
 import os
 
+import matplotlib.font_manager as fm
 import numpy as np
 import torch
 from matplotlib import pyplot as plt
 from matplotlib.cm import ScalarMappable
-from scipy.cluster.hierarchy import linkage, fcluster
-from scipy.spatial.distance import pdist
-from .utils import minmax, sort_ascend, format_input, process_grid_data
-import matplotlib.font_manager as fm
+
+from .utils import minmax, format_input, process_grid_data
+
 
 #
 # def plot_lambda_error(solver):
@@ -37,32 +37,31 @@ import matplotlib.font_manager as fm
 #     def plot_lambdas(ax, d, ylim, ylabel=False):
 #         ax.plot(solver.lambdas_pde, d)
 #         ax.set_ylim(ylim)
-    #     # ax.axvline(100, color='red', label='$\lambda=100$')
-    #     ax.set_xlabel('$\lambda$', fontsize=18)
-    #     if ylabel: ax.set_ylabel('Loss', fontsize=18)
-    #     # ax.legend(fontsize=18, loc='lower right')
-    #
-    # fig, (ax1, ax2, ax3) = plt.subplots(1, 3, dpi=300, figsize=(15, 5), tight_layout=True)
-    #
-    # plot_lambdas(ax1, solver.Ls, (0, minimum * 2), ylabel=True)
-    # plot_lambdas(ax2, solver.Ls_pde, (0, minimum_pde * 2))
-    # plot_lambdas(ax3, solver.Ls_bc, (0, minimum_bc * 5))
-    #
-    # ax1.text(0.5, -0.25, '(a)', transform=ax1.transAxes, ha='center', va='center', fontsize=18)
-    # ax2.text(0.5, -0.25, '(b)', transform=ax2.transAxes, ha='center', va='center', fontsize=18)
-    # ax3.text(0.5, -0.25, '(c)', transform=ax3.transAxes, ha='center', va='center', fontsize=18)
-    #
-    # ax1.set_xscale('log', base=2)
-    # ax2.set_xscale('log', base=2)
-    # ax3.set_xscale('log', base=2)
-    # plt.savefig('../Auswertungen/Lambda_Transfer/Lambdas_Transfer.png')
-    # plt.savefig('../Auswertungen/Lambda_Transfer/Lambdas_Transfer.pdf')
-    #
-    # plt.show()
+#     # ax.axvline(100, color='red', label='$\lambda=100$')
+#     ax.set_xlabel('$\lambda$', fontsize=18)
+#     if ylabel: ax.set_ylabel('Loss', fontsize=18)
+#     # ax.legend(fontsize=18, loc='lower right')
+#
+# fig, (ax1, ax2, ax3) = plt.subplots(1, 3, dpi=300, figsize=(15, 5), tight_layout=True)
+#
+# plot_lambdas(ax1, solver.Ls, (0, minimum * 2), ylabel=True)
+# plot_lambdas(ax2, solver.Ls_pde, (0, minimum_pde * 2))
+# plot_lambdas(ax3, solver.Ls_bc, (0, minimum_bc * 5))
+#
+# ax1.text(0.5, -0.25, '(a)', transform=ax1.transAxes, ha='center', va='center', fontsize=18)
+# ax2.text(0.5, -0.25, '(b)', transform=ax2.transAxes, ha='center', va='center', fontsize=18)
+# ax3.text(0.5, -0.25, '(c)', transform=ax3.transAxes, ha='center', va='center', fontsize=18)
+#
+# ax1.set_xscale('log', base=2)
+# ax2.set_xscale('log', base=2)
+# ax3.set_xscale('log', base=2)
+# plt.savefig('../Auswertungen/Lambda_Transfer/Lambdas_Transfer.png')
+# plt.savefig('../Auswertungen/Lambda_Transfer/Lambdas_Transfer.pdf')
+#
+# plt.show()
 
 
 def plot_subplot(ax, x, y, v, title, vmin=None, vmax=None, cb_pad=0.018, cb_ztick=False, grid=False, show_points=False):
-
     if vmin is None:
         vmin = min((np.min(v), 0))
     if vmax is None:
@@ -71,14 +70,14 @@ def plot_subplot(ax, x, y, v, title, vmin=None, vmax=None, cb_pad=0.018, cb_ztic
     if grid:
         c = ax.imshow(v, cmap='jet', vmin=vmin, vmax=vmax, extent=(0, 1, 0, 1), origin='lower')
     else:
-        c = ax.tricontourf(x.reshape(-1), y.reshape(-1), v.reshape(-1), 100, cmap='jet', vmin=vmin, vmax=vmax)#, extent=(0, 1, 0, 1))
+        c = ax.tricontourf(x.reshape(-1), y.reshape(-1), v.reshape(-1), 100, cmap='jet', vmin=vmin,
+                           vmax=vmax)  # , extent=(0, 1, 0, 1))
 
     if show_points:
         ax.scatter(x, y, s=1, c='black', marker='.', alpha=0.5)
 
     if title != '':
         ax.set_title(title, fontsize=16, pad=12, fontweight='bold')
-
 
     # ax.set_xlim(0, 1)
     # ax.set_ylim(0, 1)
@@ -138,9 +137,7 @@ def plot_comparison(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, u_num,
     """
 
     u_pred, u_num, f, f_pred, x, y, x_bc, y_bc = format_input([u_pred, u_num, f, f_pred, x_pde, y_pde, x_bc, y_bc],
-                                                           precision=torch.float64, device="cpu", as_array=True)
-
-
+                                                              precision=torch.float64, device="cpu", as_array=True)
 
     x_tot = np.concatenate([x, x_bc])
     y_tot = np.concatenate([y, y_bc])
@@ -164,7 +161,7 @@ def plot_comparison(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, u_num,
     plot_subplot(axs[0][2], x_tot, y_tot, (u_pred - u_num), 'Residual', cb_pad=0.03, cb_ztick=True, grid=grid)
     plot_subplot(axs[1][0], x, y, f, '', vmin_f, vmax_f, cb_pad=0.08, grid=grid)
     plot_subplot(axs[1][1], x, y, f_pred, '', vmin_f, vmax_f, cb_pad=0.08, grid=grid)
-    plot_subplot(axs[1][2], x, y, (f_pred - f), '',  cb_pad=0.08, cb_ztick=True, grid=grid)
+    plot_subplot(axs[1][2], x, y, (f_pred - f), '', cb_pad=0.08, cb_ztick=True, grid=grid)
 
     axs[0][0].set_ylabel('y', labelpad=-10, fontsize=14)
     axs[1][0].set_ylabel('y', labelpad=-10, fontsize=14)
@@ -220,7 +217,7 @@ def plot(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, grid=False, save=False, sa
 
     """
     u_pred, f, f_pred, x, y, x_bc, y_bc = format_input([u_pred, f, f_pred, x_pde, y_pde, x_bc, y_bc],
-                                                              precision=torch.float64, device="cpu", as_array=True)
+                                                       precision=torch.float64, device="cpu", as_array=True)
 
     x_tot = np.concatenate([x, x_bc])
     y_tot = np.concatenate([y, y_bc])
@@ -242,7 +239,7 @@ def plot(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, grid=False, save=False, sa
     plot_subplot(axs[0][1], x_tot, y_tot, u_pred, 'Machine Learning', vmin_u, vmax_u, cb_pad=0.03, grid=grid)
     plot_subplot(axs[1][0], x, y, f, '', vmin_f, vmax_f, cb_pad=0.08, grid=grid, show_points=True)
     plot_subplot(axs[1][1], x, y, f_pred, '', vmin_f, vmax_f, cb_pad=0.08, grid=grid)
-    plot_subplot(axs[1][2], x, y, (f_pred - f), '',  cb_pad=0.08, cb_ztick=True, grid=grid)
+    plot_subplot(axs[1][2], x, y, (f_pred - f), '', cb_pad=0.08, cb_ztick=True, grid=grid)
 
     axs[0][0].set_ylabel('y', labelpad=-10, fontsize=14)
     axs[1][0].set_ylabel('y', labelpad=-10, fontsize=14)
@@ -260,8 +257,9 @@ def plot(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, grid=False, save=False, sa
         plt.show()
     plt.close()
 
+
 def plot_side_by_side(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, u_num,
-                    grid=False, save=False, save_path=None, name=None, show=True):
+                      grid=False, save=False, save_path=None, name=None, show=True):
     """
     This function is used to plot and compare the numeric solution, the predicted Machine Learning solution,
     and the residual between the two. It also shows the true source function, the predicted source function,
@@ -299,9 +297,7 @@ def plot_side_by_side(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, u_num,
     """
 
     u_pred, u_num, f, f_pred, x, y, x_bc, y_bc = format_input([u_pred, u_num, f, f_pred, x_pde, y_pde, x_bc, y_bc],
-                                                           precision=torch.float64, device="cpu", as_array=True)
-
-
+                                                              precision=torch.float64, device="cpu", as_array=True)
 
     x_tot = np.concatenate([x, x_bc])
     y_tot = np.concatenate([y, y_bc])
@@ -315,7 +311,8 @@ def plot_side_by_side(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, u_num,
 
     fig, ax = plt.subplots(1, 2, figsize=(10, 8), dpi=400, tight_layout=True, sharey='row', sharex='col')
 
-    ax[0].tricontourf(x_tot.reshape(-1), y_tot.reshape(-1), u_num.reshape(-1), 200, cmap='jet', vmin=vmin_u, vmax=vmax_u)
+    ax[0].tricontourf(x_tot.reshape(-1), y_tot.reshape(-1), u_num.reshape(-1), 200, cmap='jet', vmin=vmin_u,
+                      vmax=vmax_u)
     ax[1].tricontourf(x_tot.reshape(-1), y_tot.reshape(-1), u_pred.reshape(-1), 200, cmap='jet', vmin=vmin_u,
                       vmax=vmax_u)
 
