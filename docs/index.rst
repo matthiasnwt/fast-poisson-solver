@@ -74,7 +74,7 @@ It is also not important for the coordinates to lie on a grid (Note: The numeric
 For more details:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
    solver
