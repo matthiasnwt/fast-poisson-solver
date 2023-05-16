@@ -1,8 +1,6 @@
 # Fast Poisson Solver
 <div align="center">
-<img src="/assets/example_result.png" height="200" /> 
-  <img src="/assets/execution_time_vs_precision.png" height="220" />
-  
+    <img src="/assets/example_result.png" height="250" />
 </div>
 
 The Poisson equation is an integral part of many physical phenomena, yet its computation
@@ -15,6 +13,10 @@ method while maintaining high accuracy in various test scenarios.
 The improved efficiency comes from the possibility to pre-compute domain specific steps.
 This means, for a given domain, the poisson equation can be efficiently solved for different source functions and boundary conditions.
 The basic usage example below illustrates this.
+
+<div align="center">
+<img src="/assets/execution_time_vs_precision.png" height="220" />
+</div>
 
 This module comes with an easy-to-use method for solving arbitrary 2D Poisson problems.
 It also includes a numerical solver and an analyzing function to quantify the results.
