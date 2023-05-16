@@ -25,33 +25,33 @@ from sklearn.metrics import r2_score
 from .utils import format_input
 
 
-
-def analyze(f, f_pred, u_pred, u_bc_pred, u_num, u_bc, normalize=True):
+def analyze(f_pred, f, u_bc_pred, u_bc, u_pred=None, u_num=None, normalize=True):
     """
     Analyze the performance of a Poisson equation solver by comparing predictions with true or numerical values.
 
     This function calculates various error metrics including Mean Squared Error (MSE), Root Mean Squared Error (RMSE),
-    Mean Absolute Error (MAE), Relative Mean Absolute Error (MAE_R), Structural Similarity Index (SSIM),
+    Mean Absolute Error (MAE), Relative Mean Absolute Error (rMSE), Structural Similarity Index (SSIM),
     Peak Signal-to-Noise Ratio (PSNR), and R-Squared (R2) for each of the source term (f), solution (u), and
     boundary condition (bc) predictions.
 
     The predicted source term 'f_pred' and boundary condition 'u_bc_pred' are compared with the true source term 'f'
-    and true boundary condition 'u_bc'. The predicted solution 'u_pred' is compared with the numerical solution 'u_num'.
+    and true boundary condition 'u_bc'. If provided, the predicted solution 'u_pred' is compared with the numerical
+    solution 'u_num'.
 
     Parameters
     ----------
-    f : array-like
-        The true source term of the Poisson equation. Can be a list, numpy array or PyTorch tensor.
     f_pred : array-like
         The predicted source term by the solver. Can be a list, numpy array or PyTorch tensor.
-    u_pred : array-like
-        The predicted solution of the Poisson equation. Can be a list, numpy array or PyTorch tensor.
+    f : array-like
+        The true source term of the Poisson equation. Can be a list, numpy array or PyTorch tensor.
     u_bc_pred : array-like
         The predicted solution for the boundary condition. Can be a list, numpy array or PyTorch tensor.
-    u_num : array-like
-        The numerical solution of the Poisson equation. Can be a list, numpy array or PyTorch tensor.
     u_bc : array-like
         The true boundary condition. Can be a list, numpy array or PyTorch tensor.
+    u_pred : array-like, optional
+        The predicted solution of the Poisson equation. Can be a list, numpy array or PyTorch tensor (default is None).
+    u_num : array-like, optional
+        The numerical solution of the Poisson equation. Can be a list, numpy array or PyTorch tensor (default is None).
     normalize : bool, optional
         If True, normalize the input arrays before calculating the error metrics (default is True).
 
@@ -63,7 +63,7 @@ def analyze(f, f_pred, u_pred, u_bc_pred, u_num, u_bc, normalize=True):
 
         'u'
             A dictionary containing the error metrics for the predicted solution 'u_pred' compared to the numerical
-            solution 'u_num'.
+            solution 'u_num' (only if 'u_num' and 'u_pred' are provided).
         'f'
             A dictionary containing the error metrics for the predicted source term 'f_pred' compared to the true
             source term 'f'.
@@ -72,6 +72,12 @@ def analyze(f, f_pred, u_pred, u_bc_pred, u_num, u_bc, normalize=True):
             true boundary condition 'u_bc'.
             
     """
+    if u_num is None or u_pred is None:
+        u_num = [0]
+        u_pred = [0]
+        u_comparison = False
+    else:
+        u_comparison = True
 
     f, f_pred, u_pred, u_bc_pred, u_num, u_bc = format_input([f, f_pred, u_pred, u_bc_pred, u_num, u_bc], as_array=True)
 
@@ -115,39 +121,38 @@ def analyze(f, f_pred, u_pred, u_bc_pred, u_num, u_bc, normalize=True):
         mae_r = np.mean(np.abs(image1_ - image2_)) / np.max((np.mean(np.abs(image1_)), 1e-6))
         return mse, rmse, mae, mae_r
 
-    ssim_value_u, psnr_value_u, r2_u = analyze_struct(u_num, u_pred, bv)
-    mse_u, rmse_u, mae_u, mae_r_u = analyze_standard(u_num, u_pred, bv)
-
-    ssim_value_f, psnr_valuie_f, r2_f = analyze_struct(f, f_pred, 0)
-    mse_f, rmse_f, mae_f, mae_r_f = analyze_standard(f, f_pred, 0)
-
-    mse_u_bc, rmse_u_bc, mae_u_bc, mae_r_bc = analyze_standard(u_bc, u_bc_pred, bv)
-
-    res = {
-        'u': {
+    res = {}
+    if u_comparison:
+        ssim_value_u, psnr_value_u, r2_u = analyze_struct(u_num, u_pred, bv)
+        mse_u, rmse_u, mae_u, mae_r_u = analyze_standard(u_num, u_pred, bv)
+        res['u'] = {
             'MSE': mse_u,
             'RMSE': rmse_u,
             'MAE': mae_u,
-            'MAE_R': mae_r_u,
+            'rMAE': mae_r_u,
             'SSIM': ssim_value_u,
             'PSNR': psnr_value_u,
             'R2': r2_u
-        },
-        'f': {
-            'MSE': mse_f,
-            'RMSE': rmse_f,
-            'MAE': mae_f,
-            'MAE_R': mae_r_f,
-            'SSIM': ssim_value_f,
-            'PSNR': psnr_valuie_f,
-            'R2': r2_f
-        },
-        'bc': {
-            'MSE': mse_u_bc,
-            'RMSE': rmse_u_bc,
-            'MAE': mae_u_bc,
-            'MAE_R': mae_r_bc
-        },
+            }
+
+    ssim_value_f, psnr_valuie_f, r2_f = analyze_struct(f, f_pred, 0)
+    mse_f, rmse_f, mae_f, mae_r_f = analyze_standard(f, f_pred, 0)
+    res['f'] = {
+        'MSE': mse_f,
+        'RMSE': rmse_f,
+        'MAE': mae_f,
+        'rMAE': mae_r_f,
+        'SSIM': ssim_value_f,
+        'PSNR': psnr_valuie_f,
+        'R2': r2_f
+    }
+
+    mse_u_bc, rmse_u_bc, mae_u_bc, mae_r_bc = analyze_standard(u_bc, u_bc_pred, bv)
+    res['bc'] = {
+        'MSE': mse_u_bc,
+        'RMSE': rmse_u_bc,
+        'MAE': mae_u_bc,
+        'rMAE': mae_r_bc
     }
 
     return res

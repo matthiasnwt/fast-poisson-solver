@@ -48,7 +48,7 @@ data = Data(domain_x=[0, 1],
             grid_num=grid_size,
             random_coords=False,
             cases=cases,
-            noise_std=1,
+            noise_std=0,
             use_torch=True,
             device=device,
             precision=torch.float32,
@@ -68,10 +68,10 @@ u_ml, u_ml_pde, u_ml_bc, f_ml, t_ml = solver.solve(f, u_bc)
 # u_ml = bicubic_interpolate(x_pde, y_pde, x_bc, y_bc, u_ml, x_pde_num, y_pde_num, x_bc_num, y_bc_num)
 # f_ml = bicubic_interpolate(x_pde, y_pde, x_bc, y_bc, f_ml, x_pde_num, y_pde_num, x_bc_num, y_bc_num, domain=True)
 
-res = analyze(f, f_ml, u_ml, u_ml_bc, u_num, u_bc, normalize=True)
+res = analyze(f_ml, f, u_ml_bc, u_bc, normalize=True)
 print(res)
 # solver.plot_lambda_error()
-plot_comparison(x_pde_num, y_pde_num, x_bc_num, y_bc_num, u_ml, f_num, f_ml, u_num, grid=True, show=True)
+# plot_comparison(x_pde_num, y_pde_num, x_bc_num, y_bc_num, u_ml, f_num, f_ml, u_num, grid=True, show=True)
 # plot(x_pde, y_pde, x_bc, y_bc, u_ml, f, f_ml, grid=False, show=True)
 # solver.plot_w(show=True)
 # solver.plot_H(show=False)

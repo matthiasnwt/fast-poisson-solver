@@ -126,20 +126,45 @@ def process_grid_data(x, y, z1, z2=None):
 def bicubic_interpolate(x_pde_base, y_pde_base, x_bc_base, y_bc_base, v_base, x_pde_new, y_pde_new, x_bc_new, y_bc_new,
                         domain=False):
     """
-    Interpolates values for new x, y coordinates using bicubic interpolation
+    Performs bicubic interpolation of a two-dimensional field.
 
-    :param x: numpy array, original x coordinates
-    :param y: numpy array, original y coordinates
-    :param v: numpy array, values at original coordinates
-    :param x_new: numpy array, new x coordinates to predict values for
-    :param y_new: numpy array, new y coordinates to predict values for
-    :return: numpy array, interpolated values at new coordinates
+    The function performs bicubic interpolation of a field, which is defined by its values `v_base` at points
+    `(x_pde_base, y_pde_base)` for the domain and `(x_bc_base, y_bc_base)` for the boundary. Interpolation is done
+    at new points `(x_pde_new, y_pde_new)` for the domain and `(x_bc_new, y_bc_new)` for the boundary.
+    Interpolation can be done only inside the domain, excluding the boundary, depending on the `domain` parameter.
+
+    Parameters
+    ----------
+    x_pde_base : tensor/array/list
+        x-coordinates of the PDE base points.
+    y_pde_base : tensor/array/list
+        y-coordinates of the PDE base points.
+    x_bc_base : tensor/array/list
+        x-coordinates of the boundary base points.
+    y_bc_base : tensor/array/list
+        y-coordinates of the boundary base points.
+    v_base : tensor/array/list
+        Values of the field at the base points.
+    x_pde_new : tensor/array/list
+        x-coordinates of the new PDE points for interpolation.
+    y_pde_new : tensor/array/list
+        y-coordinates of the new PDE points for interpolation.
+    x_bc_new : tensor/array/list
+        x-coordinates of the new boundary points for interpolation.
+    y_bc_new : tensor/array/list
+        y-coordinates of the new boundary points for interpolation.
+    domain : bool, optional
+        If True, the interpolation is done only inside the domain, not on the boundary. Defaults to False.
+
+    Returns
+    -------
+    tensor/array/list
+        The interpolated field values at the new points.
     """
-    # First, we'll need to create a grid of x, y values
 
     x_pde_base, y_pde_base, x_bc_base, y_bc_base, v_base, x_pde_new, y_pde_new, x_bc_new, y_bc_new = format_input(
         [x_pde_base, y_pde_base, x_bc_base, y_bc_base, v_base, x_pde_new, y_pde_new, x_bc_new, y_bc_new],
-        precision=torch.float64, device='cpu', as_array=True, reshape=True)
+        precision=v_base.dtype(), device='cpu', as_array=True, reshape=True)
 
     if domain:
         x_base = x_pde_base.reshape(-1)

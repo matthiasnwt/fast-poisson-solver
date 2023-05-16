@@ -19,3 +19,4 @@ from .data import Data
 from .numeric_solver import numeric_solve
 from .plotter import *
 from .analyze import *
+from .utils import bicubic_interpolate

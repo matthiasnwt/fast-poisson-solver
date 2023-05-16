@@ -20,6 +20,7 @@ Usage of ``numeric_solve`` function is as follows:
 
 The function accepts lists, numpy arrays, or PyTorch tensors as input data.
 It explicitly accepts the same input as the Solver.
+However, the coordinates have to form a grid but the order is not important, as the function sorts them anyway.
 
 For more details and further input variables see the full documentation below.
 

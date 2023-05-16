@@ -4,7 +4,23 @@
   <img src="/assets/platzhalter.jpg" height="100" /> 
 </p>
 
-Short description of your project, what it does, the motivation behind it, and its core features.
+The Poisson equation is an integral part of many physical phenomena, yet its computation
+is often time-consuming. This module presents an efficient method using
+physics-informed neural networks (PINNs) to rapidly solve arbitrary 2D Poisson
+problems. Focusing on the 2D Poisson equation, the
+method used in this module shows significant speed improvements over the finite difference
+method while maintaining high accuracy in various test scenarios.
+
+The improved efficiency comes from the possibility to pre-compute domain specific steps.
+This means, for a given domain, the poisson equation can be efficiently solved for different source functions and boundary conditions.
+The basic usage example below illustrates this.
+
+This module comes with an easy-to-use method for solving arbitrary 2D Poisson problems.
+It also includes a numerical solver and an analyzing function to quantify the results.
+For visual inspection, the module offers a plotting function.
+
+In its current version this module supports only 2D Poisson problems with Dirichlet boundary conditions.
+The boundary conditions should be a constant value.
 
 ## Table of Contents
 1. [Installation](#installation)
@@ -17,89 +33,76 @@ Short description of your project, what it does, the motivation behind it, and i
 
 ## Installation
 
-This project is available on PyPI and can be installed with pip:
+This project is available on PyPI and can be installed with pip.
 
 ```bash
 pip install fast-poisson-solver
 ```
+Ensure that you have the latest version of pip; if you're unsure, you can upgrade pip with the following command:
 
-## Usage
-The code is designed to be very flexible on the input and can take lists, numpy arrays and pytorch tensors as input.
-Currently only 2d domains are supported.
-The code needs x and y coordinates for the pde domain and x and y coordinates for the boundary region.
-The coordinates order does not matter.
-For each pair of x and y coordinate the pde domains needs a value for the source function and the boundary domain one for the boundary value.
-For each domain and boundary region, the pre-computational has to be done only ones.
-Then unlimited different source functions and boundary condition values can be calculated.
-### Basic
+```bash
+pip install --upgrade pip
+```
+
+You might need to use `pip3` instead of `pip`, depending on your system.
+
+## Basic Usage
+The Fast Poisson Solver is designed to be highly adaptable and flexible. It can accept a variety of input formats, including lists, numpy arrays, and PyTorch tensors. Please note that currently, only 2D domains are supported.
+
+The solver requires `x` and `y` coordinates for both the PDE domain and the boundary region. The order of these coordinates does not matter. For each pair of `x` and `y` coordinates, the PDE domain needs a value for the source function, and the boundary domain needs a value for the boundary condition.
+
+Once the pre-computation for each domain and boundary region is done, it can be used for unlimited different source functions and boundary condition values.
+
+Here is a basic example:
 
 ```python
 from fast_poisson_solver import Solver
+
 solver = Solver()
 solver.precompute(x_pde, y_pde, x_bc, y_bc)
+
 u_ml, u_ml_pde, u_ml_bc, f_ml, t_ml = solver.solve(f1, u_bc1)
 u_ml, u_ml_pde, u_ml_bc, f_ml, t_ml = solver.solve(f2, u_bc2)
-...
+u_ml, u_ml_pde, u_ml_bc, f_ml, t_ml = solver.solve(f3, u_bc3)
+# ...
 ```
 
-In the following the class and the two methods are described in more detail.
-Also, the usage of the numeric, plotting and analyzing method are described.
+Please replace x_pde, y_pde, x_bc, y_bc, f, and u_bc with your actual data or variables.
 
-### `Solver` Class
-The `Solver` class is a key component of the `fast_poisson_solver` package.
-This class represents the main solver used for fast Poisson equation solving.
+As the approach works best for coordinates that lie between 0 and 1, is it hard limited on this interval.
+The order of the coordinates does not matter as long as the `x`, `y` and corresponding source term or value for the boundary condition match.
+It is also not important for the coordinates to lie on a grid (Note: The numeric function needs a grid).
 
-You can initialize as instance of the `Solver` class as follows:
-
-``` python
-solver = Solver(device='cuda:0', precision=torch.float32, verbose=False,
-                use_weights=True, compile_model=True, lambdas_pde=None, seed=0)
-```
-Below is a brief explanation of the parameters used in the initialization of the Solver class:
-* **device** (default `'cuda'`): Specifies the device where the computations will be performed. This should be a valid PyTorch device string such as `'cuda'` for GPU processing or `'cpu'` for CPU processing.
-* **precision** (default `torch.float32`): This determines the precision of the computation. This should be a valid PyTorch data type such as `torch.float32` or `torch.float64`.
-* **verbose** (default `False`): A boolean value which, when set to `True`, enables the printing of detailed logs during computation.
-* **use_weights** (default `True`): A boolean value which determines whether the network uses pre-trained weights or random weights. If `True`, the network uses pre-trained weights.
-* **compile_model** (default `True`): A boolean value which specifies whether the network model is compiled for faster inference. If `False`, the model won't be compiled.
-* **lambdas_pde** (default `None`): A list of floats that weight the influence of the PDE part in the loss term. If `None`, default weight `1e-11` will be used.
-* **seed** (default `0`): This parameter sets the seed for generating random numbers, which helps in achieving deterministic results.
+For more details see the [Documentation](https://fast-poisson-solver.readthedocs.io/en/latest/)
 
 
-### `precompute` Method
-The `precompute` method is used for precomputing of the data based on the given coordinates.
-This method is part of the `Solver` class and can be used as follows:
-
-```python
-solver.precompute(x_pde, y_pde, x_bc, y_bc, name=None, save=True, load=True)
-```
-Here is a brief explanation of the parameters for this method:
-* **x_pde**, **y_pde**: These are the coordinates that lie inside the domain and define the behavior of the partial differential equation (PDE). They should be provided as should be provided as a tensor, an array, or a list. Please note that using tensors would lead to the fastest computations.
-* **x_bc**, **y_bc**: These are the coordinates of the boundary condition. They should be provided as a tensor, an array, or a list. Please note that using tensors would lead to the fastest computations.
-* **name** (default `None`): This is an optional parameter that specifies the name used for saving or loading the precomputed data. If no name is provided, the default name will be used.
-* **save** (default `True`): A boolean value that specifies whether the precomputed data should be saved. If `True`, the data will be saved using the provided `name`.
-* **load** (default `True`): A boolean value that specifies whether the precomputed data with the provided `name` should be loaded. If `True`, the method will attempt to load the data with the given name.
-
-### `solve` Method
-The `solve` method is used to solve the PDE with the provided source function and boundary condition. 
-This method is part of the `Solver` class and can be used as follows:
-```python
-solver.solve(f, bc)
-```
-Here is a brief explanation of the parameters for this method:
-* **f**: This is the source function for the PDE. It should be provided as a tensor, an array, or a list. Please note that using tensors would lead to the fastest computations.
-* **bc**: This is the boundary condition for the PDE. It should also be provided as a tensor, an array, or a list. As with the source function, using tensors would result in the fastest computations.
-
-They should be provided as tensors, arrays or lists (Note: tensors are the fastest).
 ## Features
 ## Contributing
-
-We use SemVer for versioning.
-
+We warmly welcome contributions to this module. 
+If you have ideas for improvements, new features, or bug fixes, please feel free to submit a pull request.
+We appreciate your support in making this module more useful for everyone. 
+When making a contribution, please ensure your code adheres to our guidelines, which can also be found in the repository.
 
 ## License
+Copyright (C) 2023 Matthias Neuwirth
 
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ## Contact
+If you encounter any issues while using this module, or if you have suggestions for improvements or new features, please report them to us through the "Issues" tab.
 
-## To-Dos
-* Implement a check for cuda and automatically switch to cpu if cuda is not avaiable
+## Roadmap and Future Enhancements
+* Dirichlet boundary conditions with multiple values or multiple regions of Dirichlet boundary conditions
+* Neuman, Robin, and mixed boundary conditions
+* Extend this approach to 1D and 3D or even nD
