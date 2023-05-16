@@ -21,12 +21,12 @@ from fast_poisson_solver import Solver, Data, numeric_solve, plot_comparison, pl
 device = torch.device('cuda')
 
 grid_size = 200
-name = 'test'
-save_path = '../Auswertungen/Test'
+name = 'geo'
+save_path = '../assets'
 seed = 0
 lambdas_pde = [2 ** -11]
 
-cases = [{'name': 'perlin', 'param': 'random', 'b_val': 0}]
+cases = [{'name': 'geo', 'param': 'random1', 'b_val': 0}]
 
 data = Data(domain_x=[0, 1],
             domain_y=[0, 1],

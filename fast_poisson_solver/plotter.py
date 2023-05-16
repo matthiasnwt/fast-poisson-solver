@@ -328,6 +328,9 @@ def plot_side_by_side(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, u_num,
 
     ax[0].axis('off')
     ax[1].axis('off')
+
+    plt.text(1, -0.06, '400x400 Grid', ha='right', va='bottom', transform=plt.gca().transAxes)
+
     if save:
         if not os.path.isdir(save_path):
             os.makedirs(save_path, exist_ok=True)
