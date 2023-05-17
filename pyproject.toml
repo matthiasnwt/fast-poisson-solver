@@ -11,7 +11,7 @@ repository = "https://github.com/matthiasnwt/fast-poisson-solver"
 documentation = "https://fast-poisson-solver.readthedocs.io/en/latest/"
 classifiers = [
     "Development Status :: 3 - Alpha",
-    "License :: OSI Approved :: GNU General Public License v3",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
     "Topic :: Scientific/Engineering :: Mathematics",

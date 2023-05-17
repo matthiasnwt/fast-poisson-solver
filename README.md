@@ -8,8 +8,8 @@ method used in this module shows significant speed improvements over the finite 
 method while maintaining high accuracy in various test scenarios.
 
 <div align="center">
-    <img src="/assets/perlin.png" height="200" style="margin:1000px;"/>
-    <img src="/assets/sin.png" height="200" style="margin:100px;"/>
+    <img src="https://raw.githubusercontent.com/matthiasnwt/fast-poisson-solver/main/assets/perlin.png" height="200"/>
+    <img src="https://raw.githubusercontent.com/matthiasnwt/fast-poisson-solver/main/assets/sin.png" height="200"/>
 </div>
 
 The improved efficiency comes from the possibility to pre-compute domain specific steps.
@@ -18,7 +18,7 @@ The basic usage example below illustrates this.
 This approach is therefore only faster, if the Poisson equation needs to solved for the same domain with different source functions and boundary values, e.g. in simulation software. 
 
 <div align="center">
-<img src="/assets/execution_time_vs_precision.png" height="320" />
+<img src="https://raw.githubusercontent.com/matthiasnwt/fast-poisson-solver/main/assets/execution_time_vs_precision.png" height="320" />
 </div>
 
 This module comes with an easy-to-use method for solving arbitrary 2D Poisson problems.
