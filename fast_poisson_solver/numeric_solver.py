@@ -36,7 +36,7 @@ from .utils import format_input
 warnings.simplefilter('ignore', SparseEfficiencyWarning)
 
 
-def numeric_solve(f, x_pde, y_pde, u_bc, x_bc, y_bc, precision=torch.float32, timeit=False, verbose=0):
+def numeric_solve(f, x_pde, y_pde, u_bc, x_bc, y_bc, precision=torch.float32, verbose=0):
     """
     This function numerically solves the partial differential equation (PDE) using the provided source function,
     PDE coordinates, boundary condition, and boundary condition coordinates. It uses the precision specified,
@@ -58,8 +58,6 @@ def numeric_solve(f, x_pde, y_pde, u_bc, x_bc, y_bc, precision=torch.float32, ti
         Coordinates of the boundary condition.
     precision : torch.dtype, optional
         The precision to be used for the numeric solver. Default is torch.float32.
-    timeit : bool, optional
-        Whether to measure the time taken for the operation. Default is False.
     verbose : int, optional
         Controls the verbosity of the output. If 0, only the solution 'u' is returned. If greater than 0,
         both the solution 'u' and runtime 'delta t' are returned. Default is 1.
@@ -67,14 +65,11 @@ def numeric_solve(f, x_pde, y_pde, u_bc, x_bc, y_bc, precision=torch.float32, ti
     Returns
     -------
     tuple
-        The solution 'u' and runtime 'delta t' if `verbose` is greater than 0, otherwise only the solution 'u'.
-
         u : tensor
             The complete numeric solution of the PDE.
 
         t : float
             The runtime, i.e., the time it took the method to run in seconds.
-            Only returned if `verbose` is greater than 0.
 
     References
     ----------
@@ -157,12 +152,12 @@ def numeric_solve(f, x_pde, y_pde, u_bc, x_bc, y_bc, precision=torch.float32, ti
     u = u.astype(precision)
     end = time.perf_counter()
 
-    if timeit:
-        if verbose > 0:
-            print(f"Time Numeric Solver: {end - t0_run:.4f} s")
-        return u, end - t0_run
-    else:
-        return u
+    dt = end - t0_run
+
+    if verbose > 0:
+        print(f"Time Numeric Solver: {dt:.6f} s")
+
+    return u, dt
 
 
 if __name__ == "__main__":

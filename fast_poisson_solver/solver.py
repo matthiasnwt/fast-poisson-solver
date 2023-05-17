@@ -64,7 +64,7 @@ class Solver:
         which helps in achieving deterministic results. Default is 0.
     """
 
-    def __init__(self, device='cuda:0', precision=torch.float32, verbose=False,
+    def __init__(self, device='cuda', precision=torch.float32, verbose=False,
                  use_weights=True, compile_model=True, lambdas_pde=None, seed=0):
 
         if torch.cuda.is_available():
@@ -149,7 +149,13 @@ class Solver:
         self.model.to(self.precision)
 
         if self.compile_model:
-            self.model = torch.compile(self.model)
+            try:
+                self.model = torch.compile(self.model)
+            except Exception as e:
+                print(e)
+                print('Compiling did not work but do not worry, it will work without it.')
+                print('You need pytorch 2.0 for compiling and Linux.')
+
 
     def evaluate_network_pde(self):
         self.x_pde.requires_grad = True
@@ -198,7 +204,7 @@ class Solver:
         if self.verbose > 0:
             print('Pre-Computed stored.')
 
-    def precompute(self, x_pde, y_pde, x_bc, y_bc, name=None, save=True, load=True):
+    def precompute(self, x_pde, y_pde, x_bc, y_bc, name=None, save=False, load=False):
         """
         This method is used for precomputing of the data based on the given coordinates.
 

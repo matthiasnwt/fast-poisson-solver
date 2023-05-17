@@ -200,7 +200,6 @@ class Data:
     def generate_random_coords(self):
         engine = qmc.Sobol(d=2, scramble=True, seed=self.seed)  # d=2 for 2D points
         sample = engine.random(int(self.grid_num ** 2))
-        print(sample.shape)
         self.x_grid, self.y_grid = np.hsplit(sample, 2)
         self.y_grid = self.y_grid.flatten()
         self.x_grid = self.x_grid.flatten()

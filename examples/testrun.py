@@ -18,15 +18,15 @@ import torch
 from fast_poisson_solver import Solver, Data, numeric_solve, plot_comparison, plot, analyze, plot_side_by_side, bicubic_interpolate
 
 
-device = torch.device('cuda')
+device = torch.device('cpu')
 
-grid_size = 200
+grid_size = 30
 name = 'geo'
 save_path = '../assets'
 seed = 0
 lambdas_pde = [2 ** -11]
 
-cases = [{'name': 'geo', 'param': 'random1', 'b_val': 0}]
+cases = [{'name': 'perlin', 'param': 'random1', 'b_val': 'random'}]
 
 data = Data(domain_x=[0, 1],
             domain_y=[0, 1],
@@ -59,12 +59,12 @@ f, x_pde, y_pde, u_bc, x_bc, y_bc = data.__call__(0)
 # u_num, t_numeric = numeric_solve(f, x_pde, y_pde, u_bc, x_bc, y_bc, timeit=True, verbose=1, precision=torch.float32)
 
 solver = Solver(device=device, verbose=1, precision=torch.float32, use_weights=True)
-solver.precompute(x_pde, y_pde, x_bc, y_bc, name='200', save=True, load=True)
+solver.precompute(x_pde, y_pde, x_bc, y_bc, name='200', save=False, load=True)
 u_ml, u_ml_pde, u_ml_bc, f_ml, t_ml = solver.solve(f, u_bc)
 
 
 
-plot_side_by_side(x_pde_num, y_pde_num, x_bc_num, y_bc_num, u_ml, f_num, f_ml, u_num, grid=True, show=True, save=True, save_path=save_path, name=name)
+plot_side_by_side(x_pde_num, y_pde_num, x_bc_num, y_bc_num, u_ml, f_num, f_ml, u_num, grid=True, show=True)
 
 # u_ml = bicubic_interpolate(x_pde, y_pde, x_bc, y_bc, u_ml, x_pde_num, y_pde_num, x_bc_num, y_bc_num)
 # f_ml = bicubic_interpolate(x_pde, y_pde, x_bc, y_bc, f_ml, x_pde_num, y_pde_num, x_bc_num, y_bc_num, domain=True)

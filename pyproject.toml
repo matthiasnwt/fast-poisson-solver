@@ -25,15 +25,15 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-numpy = "^1.14"
-scikit_learn = "^0.24"
-matplotlib = "^2.2"
-perlin_noise = "^1.12"
-PyYAML = "^6.0"
-scikit-image = "^0.16"
-scipy = "^1.7"
+numpy = ">=1.14"
+scikit_learn = ">=0.24"
+matplotlib = ">=3"
+perlin_noise = ">=1.12"
+PyYAML = ">=6.0"
+scikit-image = ">=0.16"
+scipy = ">=1.7"
 numpydoc = "*"
-torch = "^2"
+torch = ">=1"
 
 [build-system]
 requires = ["poetry-core"]
