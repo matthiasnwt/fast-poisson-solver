@@ -28,14 +28,6 @@ For visual inspection, the module offers a plotting function.
 In its current version this module supports only 2D Poisson problems with Dirichlet boundary conditions.
 The boundary conditions should be a constant value.
 
-## Table of Contents
-1. [Installation](#installation)
-2. [Basic Usage](#basic-usage)
-3. [Contributing](#contributing)
-4. [License](#license)
-5. [Contact](#contact)
-6. [Roadmap and Future Enhancements](#roadmap-and-future-enhancements)
-
 ## Installation
 
 This project is available on PyPI and can be installed with pip.
