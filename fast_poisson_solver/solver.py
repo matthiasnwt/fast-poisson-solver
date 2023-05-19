@@ -18,12 +18,12 @@ import os
 import pickle
 import random
 import time
-
+import pkg_resources
 import numpy as np
 import torch
 import yaml
 from matplotlib import rcParams
-
+from importlib.resources import open_binary
 from .model import PINN
 from .utils import calculate_laplace, format_input
 
@@ -99,7 +99,7 @@ class Solver:
 
         if self.path.endswith('.pt'):
             self.weights_input = True
-            self.weights_path = self.path
+            self.weights_path = pkg_resources.resource_stream(__name__, self.path)
             self.path = os.path.join(*os.path.split(self.path)[:1])
         else:
             self.weights_input = False
@@ -114,9 +114,14 @@ class Solver:
         self.build_model()
 
     def load_data(self):
-        path = os.path.join(self.path, 'infos.yaml')
-        with open(path, 'r') as f:
-            self.infos = yaml.load(f, Loader=yaml.Loader)
+
+        def tuple_constructor(loader, node):
+            return tuple(loader.construct_sequence(node))
+
+        yaml.SafeLoader.add_constructor('tag:yaml.org,2002:python/tuple', tuple_constructor)
+
+        path = pkg_resources.resource_stream(__name__, os.path.join(self.path, 'infos.yaml'))
+        self.infos = yaml.safe_load(path)
 
         if 'out' not in self.infos['model']:
             self.infos['model']['out'] = self.infos['data_utils']['num_cases']
