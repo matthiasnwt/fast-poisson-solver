@@ -188,7 +188,7 @@ class Solver:
         M = torch.eye(self.NdO, device=self.device, dtype=self.precision) - \
             torch.ones(self.NdO, device=self.device, dtype=self.precision) / self.NdO
 
-        lambdas = torch.tensor(self.lambdas_pde, device=self.device).view(-1, 1, 1)
+        lambdas = torch.tensor(self.lambdas_pde, device=self.device, dtype=self.precision).view(-1, 1, 1)
 
         self.LHSs = lambdas / self.NO * self.DHtDH + \
                     1 / self.NdO * torch.matmul(self.Ht_bc, torch.matmul(M, self.H_bc))
