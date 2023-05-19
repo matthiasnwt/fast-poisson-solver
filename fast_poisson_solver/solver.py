@@ -73,10 +73,7 @@ class Solver:
 
         if lambdas_pde is None:
             lambdas_pde = [2 ** -11]
-        self.path = os.path.join('..', 'resources', 'final.pt')
-
-        if not os.path.isfile(self.path):
-            self.path = os.path.join('resources', 'final.pt')
+        self.path = os.path.join('resources', 'final.pt')
 
         self.verbose = verbose
         self.precision = precision
