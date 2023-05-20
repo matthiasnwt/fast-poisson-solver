@@ -24,7 +24,7 @@ grid_size = 32
 name = 'geo'
 save_path = '../assets'
 seed = 0
-lambdas_pde = [2 ** -11]
+lambdas_pde = [2 ** -12]
 
 cases = [{'name': 'perlin', 'param': 'random', 'b_val': 'random'}]
 
@@ -43,13 +43,13 @@ f, x_pde, y_pde, u_bc, x_bc, y_bc = data.__call__(0)
 
 u_num, t_numeric = numeric_solve(f, x_pde, y_pde, u_bc, x_bc, y_bc,verbose=1, precision=torch.float32)
 
-solver = Solver(device=device, verbose=1, precision=torch.float32, use_weights=True)
+solver = Solver(device=device, verbose=1, precision=torch.float32, use_weights=True, lambdas_pde=lambdas_pde)
 solver.precompute(x_pde, y_pde, x_bc, y_bc, name='200', save=False, load=False)
 u_ml, u_ml_pde, u_ml_bc, f_ml, t_ml = solver.solve(f, u_bc)
 
 
 
-plot_side_by_side(x_pde, y_pde, x_bc, y_bc, u_ml, f, f_ml, u_num, grid=True, show=True)
+# plot_side_by_side(x_pde, y_pde, x_bc, y_bc, u_ml, f, f_ml, u_num, grid=True, show=True)
 
 # u_ml = bicubic_interpolate(x_pde, y_pde, x_bc, y_bc, u_ml, x_pde_num, y_pde_num, x_bc_num, y_bc_num)
 # f_ml = bicubic_interpolate(x_pde, y_pde, x_bc, y_bc, f_ml, x_pde_num, y_pde_num, x_bc_num, y_bc_num, domain=True)
@@ -57,7 +57,7 @@ plot_side_by_side(x_pde, y_pde, x_bc, y_bc, u_ml, f, f_ml, u_num, grid=True, sho
 # res = analyze(f_ml, f, u_ml_bc, u_bc, normalize=True)
 # print(res)
 # solver.plot_lambda_error()
-# plot_comparison(x_pde_num, y_pde_num, x_bc_num, y_bc_num, u_ml, f_num, f_ml, u_num, grid=True, show=True)
+plot_comparison(x_pde, y_pde, x_bc, y_bc, u_ml, f, f_ml, u_num, grid=True, show=True)
 # plot(x_pde, y_pde, x_bc, y_bc, u_ml, f, f_ml, grid=False, show=True)
 # solver.plot_w(show=True)
 # solver.plot_H(show=False)

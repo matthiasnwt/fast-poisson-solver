@@ -58,7 +58,7 @@ class Solver:
         If False, the model won't be compiled. Default is True.
     lambdas_pde : list of float, optional
         A list that weights the influence of the PDE part in the loss term.
-        If None, default weight 1e-11 will be used. Default is None.
+        If None, default weight 1e-12 will be used. Default is None.
     seed : int, optional
         This parameter sets the seed for generating random numbers,
         which helps in achieving deterministic results. Default is 0.
@@ -72,7 +72,7 @@ class Solver:
             torch.backends.cudnn.allow_tf32 = False
 
         if lambdas_pde is None:
-            lambdas_pde = [2 ** -11]
+            lambdas_pde = [2 ** -12]
         self.path = os.path.join('resources', 'final.pt')
 
         self.verbose = verbose
@@ -102,7 +102,7 @@ class Solver:
             self.weights_input = False
 
         # Path to the where the pre-computed data_utils will be saved.
-        self.precompute_path = os.path.join(self.path, 'Precomputed')
+        self.precompute_path = 'precomputed-resources'
         if not os.path.isdir(self.precompute_path):
             os.makedirs(self.precompute_path)
         self.precompute_file = os.path.join(self.precompute_path, 'default.pkl')
