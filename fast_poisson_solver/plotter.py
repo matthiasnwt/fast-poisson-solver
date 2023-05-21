@@ -99,7 +99,8 @@ def plot_subplot(ax, x, y, v, title, vmin=None, vmax=None, cb_pad=0.018, cb_ztic
 
 
 def plot_comparison(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, u_num,
-                    grid=False, save=False, save_path=None, name=None, show=True):
+                    grid=False, save=False, save_path=None, name=None, show=True,
+                    show_points=False):
     """
     This function is used to plot and compare the numeric solution, the predicted Machine Learning solution,
     and the residual between the two. It also shows the true source function, the predicted source function,
@@ -134,6 +135,8 @@ def plot_comparison(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, u_num,
         Name of the image file. Used only if `save` is True. Default is None.
     show : bool, optional
         Whether to display the plot. Default is False.
+    show_points: bool, optional
+        Whether to show the points of the data. Default is False.
     """
 
     u_pred, u_num, f, f_pred, x, y, x_bc, y_bc = format_input([u_pred, u_num, f, f_pred, x_pde, y_pde, x_bc, y_bc],
@@ -159,7 +162,7 @@ def plot_comparison(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, u_num,
     plot_subplot(axs[0][0], x_tot, y_tot, u_num, 'Numeric', vmin_u, vmax_u, cb_pad=0.03, grid=grid)
     plot_subplot(axs[0][1], x_tot, y_tot, u_pred, 'Machine Learning', vmin_u, vmax_u, cb_pad=0.03, grid=grid)
     plot_subplot(axs[0][2], x_tot, y_tot, (u_pred - u_num), 'Residual', cb_pad=0.03, cb_ztick=True, grid=grid)
-    plot_subplot(axs[1][0], x, y, f, '', vmin_f, vmax_f, cb_pad=0.08, grid=grid)
+    plot_subplot(axs[1][0], x, y, f, '', vmin_f, vmax_f, cb_pad=0.08, grid=grid, show_points=show_points)
     plot_subplot(axs[1][1], x, y, f_pred, '', vmin_f, vmax_f, cb_pad=0.08, grid=grid)
     plot_subplot(axs[1][2], x, y, (f_pred - f), '', cb_pad=0.08, cb_ztick=True, grid=grid)
 
@@ -182,7 +185,8 @@ def plot_comparison(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, u_num,
     # np.save(os.path.join(save_path, name + '_residual.npy'), (u_pred - u_num).reshape(solver.grid_size, solver.grid_size))
 
 
-def plot(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, grid=False, save=False, save_path=None, name=None, show=True):
+def plot(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, grid=False, save=False, save_path=None, name=None, show=True,
+         show_points=False):
     """
     This function is used to plot the predicted Machine Learning solution of the PDE,
     the true source function, and the predicted source function.
@@ -214,8 +218,10 @@ def plot(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, grid=False, save=False, sa
         Name of the image file. Used only if `save` is True. Default is None.
     show : bool, optional
         Whether to display the plot. Default is False.
-
+    show_points: bool, optional
+        Whether to show the points used to train the model. Default is False.
     """
+
     u_pred, f, f_pred, x, y, x_bc, y_bc = format_input([u_pred, f, f_pred, x_pde, y_pde, x_bc, y_bc],
                                                        precision=torch.float64, device="cpu", as_array=True)
 
@@ -237,7 +243,7 @@ def plot(x_pde, y_pde, x_bc, y_bc, u_pred, f, f_pred, grid=False, save=False, sa
                    fontweight='bold')
 
     plot_subplot(axs[0][1], x_tot, y_tot, u_pred, 'Machine Learning', vmin_u, vmax_u, cb_pad=0.03, grid=grid)
-    plot_subplot(axs[1][0], x, y, f, '', vmin_f, vmax_f, cb_pad=0.08, grid=grid, show_points=True)
+    plot_subplot(axs[1][0], x, y, f, '', vmin_f, vmax_f, cb_pad=0.08, grid=grid, show_points=show_points)
     plot_subplot(axs[1][1], x, y, f_pred, '', vmin_f, vmax_f, cb_pad=0.08, grid=grid)
     plot_subplot(axs[1][2], x, y, (f_pred - f), '', cb_pad=0.08, cb_ztick=True, grid=grid)
 
