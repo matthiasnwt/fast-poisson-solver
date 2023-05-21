@@ -170,7 +170,7 @@ def bicubic_interpolate(x_pde_base, y_pde_base, x_bc_base, y_bc_base, v_base, x_
 
     x_pde_base, y_pde_base, x_bc_base, y_bc_base, v_base, x_pde_new, y_pde_new, x_bc_new, y_bc_new = format_input(
         [x_pde_base, y_pde_base, x_bc_base, y_bc_base, v_base, x_pde_new, y_pde_new, x_bc_new, y_bc_new],
-        precision=v_base.dtype(), device='cpu', as_array=True, reshape=True)
+        precision=v_base.dtype, device='cpu', as_array=True, reshape=True)
 
     if domain:
         x_base = x_pde_base.reshape(-1)
