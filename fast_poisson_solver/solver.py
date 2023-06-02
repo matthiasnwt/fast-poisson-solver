@@ -179,7 +179,7 @@ class Solver:
 
     def load_precomputed_data(self):
         with open(self.precompute_file, 'rb') as f:
-            self.LHSs, self.RHSs, self.H, self.DH, self.DHtDH, self.H_bc, self.Ht_bc_ones, self.NdO, self.NO = format_input(
+            self.LHSs, self.RHSs, self.H, self.DH, self.DHtDH, self.H_bc, self.Ht_bc, self.Ht_bc_ones, self.NdO, self.NO = format_input(
                 pickle.load(f), self.precision, self.device, reshape=False)
         if self.verbose > 0:
             print('Pre-Computed data_utils loaded from storage.')
@@ -201,7 +201,7 @@ class Solver:
     def save_precomputed_data(self):
         with open(self.precompute_file, 'wb') as file:
             pickle.dump(
-                [self.LHSs, self.RHSs, self.H, self.DH, self.DHtDH, self.H_bc, self.Ht_bc_ones, self.NdO, self.NO],
+                [self.LHSs, self.RHSs, self.H, self.DH, self.DHtDH, self.H_bc, self.Ht_bc, self.Ht_bc_ones, self.NdO, self.NO],
                 file)
         if self.verbose > 0:
             print('Pre-Computed stored.')
